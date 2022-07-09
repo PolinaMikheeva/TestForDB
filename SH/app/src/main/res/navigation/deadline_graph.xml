@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/deadline_graph"
+    app:startDestination="@id/mainFragment">
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.sh.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_deadlineFragment"
+            app:destination="@id/deadlineFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deadlineFragment"
+        android:name="com.example.sh.DeadlineFragment"
+        android:label="fragment_deadline"
+        tools:layout="@layout/fragment_deadline" />
+</navigation>
