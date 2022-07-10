@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 //аннотирую класс в качестве бд рума и в параметрах указываю организацию и версию бд
 //каждая организация отвечает за таблицу данных, созданных в бд
@@ -22,7 +25,10 @@ abstract class DlTasksRoomDatabase : RoomDatabase() {
         private var INSTANCE: DlTasksRoomDatabase? = null
 
         //получаем доступ к каждому dao через абстрактный getter метод, проходясь по каждому @Dao
-        fun getDatabase(context: Context, scope: CoroutineScope): DlTasksRoomDatabase {
+        fun getDatabase(
+            context: Context,
+            scope: CoroutineScope
+        ): DlTasksRoomDatabase {
 
             //возвращаем значение INSTANCE, если оно не null, иначе создаем бд
             return INSTANCE ?: synchronized(this) {
@@ -30,12 +36,36 @@ abstract class DlTasksRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     DlTasksRoomDatabase::class.java,
                     "dlTasks_database"
-                ).build()
+                )
+                    .addCallback(DlTaskDatabaseCallback(scope))
+                    .build()
 
                 INSTANCE = instance
                 // return instance
                 instance
                 //getDatabase возвращает singleton, он создает RoomDatabase объект из класса DlTasksRoomDatabase и называет его dlTasks_database
+            }
+        }
+
+        private class DlTaskDatabaseCallback(
+            private val scope: CoroutineScope
+        ) : RoomDatabase.Callback() {
+
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                INSTANCE?.let { database ->
+                    scope.launch{
+                        var dlTaskDao = database.dlTaskDao()
+
+                        // Удаляем здесь все содержимое
+                        dlTaskDao.deleteAll()
+
+                        var word = NewDlTask("Hello")
+                        dlTaskDao.insert(word)
+                        word = NewDlTask("World!")
+                        dlTaskDao.insert(word)
+                    }
+                }
             }
         }
     }

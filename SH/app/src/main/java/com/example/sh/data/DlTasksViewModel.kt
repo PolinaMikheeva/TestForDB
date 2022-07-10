@@ -34,9 +34,7 @@ class DlTasksViewModel(private val repository: DlTasksRepository) : ViewModel() 
     }
 }
 
-class DlTasksViewModelFactory(private val repository: DlTasksRepository) : ViewModelProvider.Factory {
-//я вообще не понимаю, зачем этот класс, но написано, что ViewModelProvider.Factory получает как параметр зависимости
-//нужные для создания ViewModel - репозиторий
+class WordViewModelFactory(private val repository: DlTasksRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DlTasksViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

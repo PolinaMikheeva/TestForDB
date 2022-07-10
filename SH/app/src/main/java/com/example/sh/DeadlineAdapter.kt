@@ -2,6 +2,7 @@ package com.example.sh
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sh.databinding.ItemExerciseBinding
 
@@ -28,4 +29,14 @@ class DeadlineAdapter(
     }
 
     override fun getItemCount(): Int = list.size
+
+    class WordsComparator : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.name == newItem.name
+        }
+    }
 }
